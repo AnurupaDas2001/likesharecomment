@@ -8,6 +8,10 @@
     "servers": [
       {
         "url": "http://localhost:3017"
+      },
+      {
+        "url" : "https://likesharecomment-wk11.onrender.com",
+        "description" : "swagger api documentation for likesharecomment"
       }
     ],
     "components": {
