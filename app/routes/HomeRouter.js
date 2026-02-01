@@ -12,7 +12,7 @@ router.post('/share', AuthCheck, HomeController.share);
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
 router.post('/post', AuthCheck, HomeController.post);
-router.get('/allposts',HomeController.postall);
+ 
 router.get('/showposts',AuthCheck, HomeController.getPostCounts);
 
 

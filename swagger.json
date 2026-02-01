@@ -1,0 +1,202 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Social Media API",
+      "description": "Auth, Posts, Likes, Comments, Shares APIs",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3017"
+      }
+    ],
+    "components": {
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      },
+      "schemas": {
+        "Register": {
+          "type": "object",
+          "required": ["name", "email", "phone", "password"],
+          "properties": {
+            "name": { "type": "string" },
+            "email": { "type": "string" },
+            "phone": { "type": "string" },
+            "password": { "type": "string" }
+          }
+        },
+        "Login": {
+          "type": "object",
+          "required": ["email", "password"],
+          "properties": {
+            "email": { "type": "string" },
+            "password": { "type": "string" }
+          }
+        },
+        "CreatePost": {
+          "type": "object",
+          "required": ["title"],
+          "properties": {
+            "title": { "type": "string" },
+            "description": { "type": "string" }
+          }
+        },
+        "PostAction": {
+          "type": "object",
+          "required": ["postId"],
+          "properties": {
+            "postId": { "type": "string" }
+          }
+        },
+        "Comment": {
+          "type": "object",
+          "required": ["postId", "comment"],
+          "properties": {
+            "postId": { "type": "string" },
+            "comment": { "type": "string" }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "BearerAuth": []
+      }
+    ],
+    "paths": {
+      "/register": {
+        "post": {
+          "tags": ["Auth"],
+          "summary": "Register user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Register" }
+              }
+            }
+          },
+          "responses": {
+            "201": { "description": "User registered" },
+            "400": { "description": "All fields required" },
+            "409": { "description": "Email already registered" }
+          }
+        }
+      },
+      "/login": {
+        "post": {
+          "tags": ["Auth"],
+          "summary": "Login user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Login" }
+              }
+            }
+          },
+          "responses": {
+            "200": { "description": "Login success" },
+            "400": { "description": "Email & password required" },
+            "401": { "description": "Invalid password" },
+            "404": { "description": "User not found" }
+          }
+        }
+      },
+      "/post": {
+        "post": {
+          "tags": ["Post"],
+          "summary": "Create post",
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreatePost" }
+              }
+            }
+          },
+          "responses": {
+            "201": { "description": "Post created successfully" },
+            "400": { "description": "Title missing or duplicate post" },
+            "401": { "description": "Unauthorized - Invalid or missing token" }
+          }
+        }
+      },
+      "/showposts": {
+        "get": {
+          "tags": ["Post"],
+          "summary": "Posts with like/comment/share count",
+          "security": [{ "BearerAuth": [] }],
+          "responses": {
+            "200": { "description": "Posts with likes, comments and shares count" },
+            "401": { "description": "Unauthorized" }
+          }
+        }
+      },
+      "/like": {
+        "post": {
+          "tags": ["Post Actions"],
+          "summary": "Like post",
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PostAction" }
+              }
+            }
+          },
+          "responses": {
+            "200": { "description": "Post liked" },
+            "400": { "description": "Post already liked" },
+            "401": { "description": "Unauthorized" }
+          }
+        }
+      },
+      "/comment": {
+        "post": {
+          "tags": ["Post Actions"],
+          "summary": "Comment on post",
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Comment" }
+              }
+            }
+          },
+          "responses": {
+            "201": { "description": "Comment added" },
+            "400": { "description": "PostId or comment missing" },
+            "401": { "description": "Unauthorized" }
+          }
+        }
+      },
+      "/share": {
+        "post": {
+          "tags": ["Post Actions"],
+          "summary": "Share post",
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PostAction" }
+              }
+            }
+          },
+          "responses": {
+            "200": { "description": "Post shared" },
+            "401": { "description": "Unauthorized" }
+          }
+        }
+      }
+    }
+  }
+  
